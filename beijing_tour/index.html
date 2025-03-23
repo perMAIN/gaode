@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>北京三日游路线规划</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; line-height: 1.6; }
+    .container { max-width: 1000px; margin: 0 auto; }
+    .header { background-color: #4CAF50; color: white; padding: 20px; margin-bottom: 20px; border-radius: 5px; }
+    .map-container { margin-bottom: 30px; }
+    .map-img { max-width: 100%; border-radius: 5px; border: 1px solid #ddd; }
+    .poi-card { background-color: #f9f9f9; margin-bottom: 15px; padding: 15px; border-radius: 5px; border-left: 5px solid #4CAF50; }
+    .poi-name { font-size: 18px; font-weight: bold; margin-bottom: 10px; color: #333; }
+    .poi-info { color: #666; }
+    .route-step { background-color: #f0f7ff; margin-bottom: 10px; padding: 10px; border-radius: 5px; }
+    .day-title { background-color: #2196F3; color: white; padding: 10px; border-radius: 5px; margin: 30px 0 15px 0; }
+    .weather-info { background-color: #fff9e6; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+    .tab { overflow: hidden; border: 1px solid #ccc; background-color: #f1f1f1; border-radius: 5px 5px 0 0; }
+    .tab button { background-color: inherit; float: left; border: none; outline: none; cursor: pointer; padding: 14px 16px; transition: 0.3s; }
+    .tab button:hover { background-color: #ddd; }
+    .tab button.active { background-color: #4CAF50; color: white; }
+    .tabcontent { display: none; padding: 20px; border: 1px solid #ccc; border-top: none; border-radius: 0 0 5px 5px; }
+    .visible { display: block; }
+    .route-legend { margin-bottom: 10px; }
+    .route-details-container { margin-bottom: 30px; }
+    .tabcontent-route { display: none; padding: 20px; border: 1px solid #ccc; border-top: none; border-radius: 0 0 5px 5px; }
+    .route-detail { background-color: #f0f7ff; padding: 15px; border-radius: 5px; }
+    .transport-info { background-color: #e8f5e9; padding: 15px; border-radius: 5px; margin-top: 15px; }
+    .transport-info h4 { color: #2E7D32; margin-top: 0; }
+    .transport-info ul { margin: 5px 0 15px 0; padding-left: 20px; }
+    .daily-map { background-color: #e3f2fd; padding: 15px; border-radius: 5px; margin-bottom: 15px; }
+    .daily-map h4 { color: #1565C0; margin-top: 0; }
+    .route-map-legend { text-align: center; font-size: 14px; margin: 10px 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>北京三日游路线规划</h1>
+      <p>精选景点：故宫、长城、颐和园、天坛、鸟巢</p>
+    </div>
+
+    <div class="weather-info">
+      <h2>旅行期间天气预报</h2>
+      <div>
+        <p><strong>第一天:</strong> 晴，温度 15°C ~ 25°C</p>
+        <p><strong>第二天:</strong> 多云，温度 16°C ~ 24°C</p>
+        <p><strong>第三天:</strong> 晴，温度 14°C ~ 23°C</p>
+      </div>
+    </div>
+
+    <div class="map-container">
+      <h2>路线地图</h2>
+      <img class="map-img" src="https://restapi.amap.com/v3/staticmap?key=3ab7cf07951a747e8ad020809e91ab44&zoom=10&size=750*500&scale=2&markers=mid,0xFF0000,A:116.403895,39.914988|mid,0x00B2EE,B:116.014194,40.356585|mid,0x00B2EE,E:116.396453,39.992569|mid,0x32CD32,C:116.270648,39.993857|mid,0x32CD32,D:116.417246,39.881096&path=10,0xFF0000,0.5,116.403895,39.914988;116.397737,39.915485;116.394926,39.922702;116.401020,39.926072;116.407737,39.915707;116.404368,39.907165|10,0x00B2EE,0.5,116.014194,40.356585;116.099853,40.230763;116.212976,40.072599;116.306015,40.039543;116.396453,39.992569|10,0x32CD32,0.5,116.270648,39.993857;116.304894,39.985643;116.361983,39.953461;116.388977,39.917362;116.417246,39.881096" alt="北京三日游路线地图">
+      <div class="route-legend">
+        <p><span style="color:#FF0000;">■</span> 第一天：故宫→景山公园→王府井</p>
+        <p><span style="color:#00B2EE;">■</span> 第二天：八达岭长城→奥林匹克公园(鸟巢)</p>
+        <p><span style="color:#32CD32;">■</span> 第三天：颐和园→什刹海→天坛</p>
+      </div>
+      <p>查看<a href="https://uri.amap.com/marker?markers=116.403895,39.914988,A:故宫|116.014194,40.356585,B:长城|116.270648,39.993857,C:颐和园|116.417246,39.881096,D:天坛|116.396453,39.992569,E:鸟巢&callnative=0" target="_blank">高德地图交互式路线</a></p>
+    </div>
+    
+    <div class="route-details-container">
+      <h2>详细路线导航</h2>
+      <div class="tab">
+        <button class="tablinks-route active" onclick="openRouteDay(event, 'route-day1')">第一天路线</button>
+        <button class="tablinks-route" onclick="openRouteDay(event, 'route-day2')">第二天路线</button>
+        <button class="tablinks-route" onclick="openRouteDay(event, 'route-day3')">第三天路线</button>
+      </div>
+      
+      <div id="route-day1" class="tabcontent-route visible">
+        <h3>第一天详细导航</h3>
+        <div class="daily-map">
+          <h4>第一天路线地图</h4>
+          <img class="map-img" src="https://restapi.amap.com/v3/staticmap?key=3ab7cf07951a747e8ad020809e91ab44&zoom=14&size=750*400&scale=2&markers=mid,0xFF0000,A:116.403895,39.914988|mid,0xFF0000,B:116.402736,39.924091|mid,0xFF0000,C:116.409221,39.913839&paths=10,0xFF0000,0.5,116.403895,39.914988;116.397737,39.915485;116.394926,39.922702;116.401020,39.926072;116.407737,39.915707;116.404368,39.907165;116.409221,39.913839" alt="第一天路线地图">
+          <div class="route-map-legend">
+            <p><strong>A</strong>: 故宫 → <strong>B</strong>: 景山公园 → <strong>C</strong>: 王府井</p>
+          </div>
+        </div>
+        <div class="route-detail">
+          <p><strong>上午：</strong> 天安门东地铁站 → 天安门广场 → 故宫午门入口</p>
+          <p><strong>沿途景点：</strong> 人民英雄纪念碑、毛主席纪念堂</p>
+          <p><strong>故宫游览路线：</strong> 午门 → 太和殿 → 中和殿 → 保和殿 → 乾清宫 → 交泰殿 → 御花园 → 神武门</p>
+          <p><strong>下午：</strong> 神武门 → 景山公园 → 景山万春亭(俯瞰故宫全景) → 步行至王府井大街</p>
+          <p><strong>晚上：</strong> 王府井小吃街 → 王府井步行街购物 → 东华门地铁站</p>
+          
+          <div class="transport-info">
+            <h4>交通信息</h4>
+            <p><strong>公共交通：</strong></p>
+            <ul>
+              <li>地铁1号线至天安门东站下车，步行约10分钟至故宫午门</li>
+              <li>故宫神武门至景山公园步行约5分钟</li>
+              <li>景山公园至王府井步行约20分钟或乘坐公交103路至王府井站</li>
+            </ul>
+            <p><strong>自驾路线：</strong></p>
+            <ul>
+              <li>请注意，天安门广场周边限行且停车位紧张，建议将车停在附近停车场后步行或乘坐公共交通前往</li>
+              <li>推荐停车点：北京市地坛体育馆地下停车场，停车后可乘坐地铁5号线至天安门东站</li>
+            </ul>
+            <p><strong>步行距离与时间：</strong></p>
+            <ul>
+              <li>地铁站至故宫：约800米，步行约10分钟</li>
+              <li>故宫内全程游览：约3-4公里，需时约3-4小时</li>
+              <li>故宫至景山公园：约400米，步行约5分钟</li>
+              <li>景山公园至王府井：约1.5公里，步行约20分钟</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <div id="route-day2" class="tabcontent-route">
+        <h3>第二天详细导航</h3>
+        <div class="daily-map">
+          <h4>第二天路线地图</h4>
+          <img class="map-img" src="https://restapi.amap.com/v3/staticmap?key=3ab7cf07951a747e8ad020809e91ab44&zoom=9&size=750*400&scale=2&markers=mid,0x00B2EE,A:116.014194,40.356585|mid,0x00B2EE,B:116.396453,39.992569&paths=10,0x00B2EE,0.5,116.014194,40.356585;116.099853,40.230763;116.212976,40.072599;116.306015,40.039543;116.396453,39.992569" alt="第二天路线地图">
+          <div class="route-map-legend">
+            <p><strong>A</strong>: 八达岭长城 → <strong>B</strong>: 奥林匹克公园(鸟巢)</p>
+          </div>
+        </div>
+        <div class="route-detail">
+          <p><strong>上午：</strong> 北京北站 → 乘坐S2线 → 八达岭长城</p>
+          <p><strong>长城游览建议：</strong> 北八楼方向(人少风景好) → 九眼楼(最高点) → 老龙头 → 八达岭长城博物馆</p>
+          <p><strong>午餐：</strong> 八达岭服务区用餐</p>
+          <p><strong>下午：</strong> 乘坐S2线返回 → 转乘地铁8号线 → 奥林匹克公园</p>
+          <p><strong>奥林匹克公园游览：</strong> 鸟巢(国家体育场) → 水立方(国家游泳中心) → 奥林匹克塔 → 奥林匹克森林公园</p>
+          <p><strong>晚上：</strong> 奥林匹克公园站 → 返回住宿地</p>
+          
+          <div class="transport-info">
+            <h4>交通信息</h4>
+            <p><strong>公共交通：</strong></p>
+            <ul>
+              <li>北京北站乘坐S2线火车至八达岭站，约1.5小时</li>
+              <li>或乘坐877路、919路长城专线直达八达岭长城，约1.5-2小时</li>
+              <li>返程后，地铁8号线至奥林匹克公园站下车，步行即可到达鸟巢</li>
+            </ul>
+            <p><strong>自驾路线：</strong></p>
+            <ul>
+              <li>从市区出发→京藏高速→延庆方向→八达岭长城出口下</li>
+              <li>全程约70公里，行车时间约1.5小时</li>
+              <li>长城至奥林匹克公园约65公里，行车时间约1小时20分钟</li>
+              <li>八达岭长城停车场：停车费约15元/小时</li>
+              <li>奥林匹克公园停车场：停车费约10元/小时</li>
+            </ul>
+            <p><strong>距离与时间：</strong></p>
+            <ul>
+              <li>市区至八达岭长城：约70公里</li>
+              <li>长城游览：约3公里，需时约2-3小时</li>
+              <li>八达岭长城至奥林匹克公园：约65公里</li>
+              <li>奥林匹克公园游览：约2公里，需时约2小时</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <div id="route-day3" class="tabcontent-route">
+        <h3>第三天详细导航</h3>
+        <div class="daily-map">
+          <h4>第三天路线地图</h4>
+          <img class="map-img" src="https://restapi.amap.com/v3/staticmap?key=3ab7cf07951a747e8ad020809e91ab44&zoom=11&size=750*400&scale=2&markers=mid,0x32CD32,A:116.270648,39.993857|mid,0x32CD32,B:116.417246,39.881096|mid,0x32CD32,C:116.399217,39.941215&paths=10,0x32CD32,0.5,116.270648,39.993857;116.304894,39.985643;116.361983,39.953461;116.388977,39.917362;116.417246,39.881096;116.404927,39.904821;116.399217,39.941215" alt="第三天路线地图">
+          <div class="route-map-legend">
+            <p><strong>A</strong>: 颐和园 → <strong>B</strong>: 天坛 → <strong>C</strong>: 什刹海/南锣鼓巷</p>
+          </div>
+        </div>
+        <div class="route-detail">
+          <p><strong>上午：</strong> 地铁4号线 → 北宫门站 → 颐和园</p>
+          <p><strong>颐和园游览路线：</strong> 东宫门 → 仁寿殿 → 长廊 → 石舫 → 佛香阁 → 苏州街 → 西堤</p>
+          <p><strong>午餐：</strong> 颐和园附近餐厅</p>
+          <p><strong>下午：</strong> 地铁4号线 → 转乘5号线 → 天坛东门站 → 天坛公园</p>
+          <p><strong>天坛游览路线：</strong> 东门 → 圜丘坛 → 皇穹宇 → 祈年殿 → 回音壁 → 三音石 → 北门</p>
+          <p><strong>晚上：</strong> 地铁5号线 → 什刹海/南锣鼓巷 → 胡同文化体验 → 返回住宿地</p>
+          
+          <div class="transport-info">
+            <h4>交通信息</h4>
+            <p><strong>公共交通：</strong></p>
+            <ul>
+              <li>地铁4号线至北宫门站下车，步行约500米至颐和园</li>
+              <li>颐和园游览结束后，乘坐地铁4号线至宣武门站，换乘5号线至天坛东门站</li>
+              <li>天坛游览结束后，乘坐地铁5号线至北新桥站或雍和宫站，步行至什刹海或南锣鼓巷</li>
+            </ul>
+            <p><strong>自驾路线：</strong></p>
+            <ul>
+              <li>市区→中关村→颐和园路→颐和园东门停车场</li>
+              <li>颐和园→二环路→永定门内大街→天坛公园</li>
+              <li>全程约25公里，行车时间约1小时</li>
+              <li>颐和园停车场：停车费约15元/小时</li>
+              <li>天坛公园停车场：停车费约10元/小时</li>
+              <li>什刹海附近建议停车在鼓楼大街停车场，后步行游览</li>
+            </ul>
+            <p><strong>距离与时间：</strong></p>
+            <ul>
+              <li>市区至颐和园：约15公里，驾车约40分钟</li>
+              <li>颐和园游览：约3-4公里，需时约3小时</li>
+              <li>颐和园至天坛：约18公里，驾车约50分钟</li>
+              <li>天坛游览：约2公里，需时约2小时</li>
+              <li>天坛至什刹海：约7公里，驾车约25分钟</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="tab">
+      <button class="tablinks active" onclick="openDay(event, 'day1')">第一天</button>
+      <button class="tablinks" onclick="openDay(event, 'day2')">第二天</button>
+      <button class="tablinks" onclick="openDay(event, 'day3')">第三天</button>
+    </div>
+    
+    <div id="day1" class="tabcontent visible">
+      <h2 class="day-title">第一天：故宫</h2>
+      <div class="poi-card">
+        <div class="poi-name">A. 故宫博物院</div>
+        <div class="poi-info">
+          <p><strong>地址:</strong> 北京市东城区景山前街4号</p>
+          <p><strong>电话:</strong> 010-85007421</p>
+          <p><strong>评分:</strong> 4.8</p>
+          <p><strong>推荐游览时间:</strong> 4-5小时</p>
+          <p><strong>交通:</strong> 地铁1号线天安门东站下车步行</p>
+          <p><strong>门票:</strong> 淡季（11月1日-次年3月31日）40元/人，旺季（4月1日-10月31日）60元/人</p>
+          <p><strong>推荐理由:</strong> 世界上规模最大的宫殿型建筑群，中国明清两代的皇家宫殿，世界文化遗产</p>
+        </div>
+      </div>
+      
+      <h3>游览建议</h3>
+      <div class="route-step">早上8:30到故宫，从午门入口进入，沿中轴线参观太和殿、中和殿、保和殿等主要宫殿</div>
+      <div class="route-step">中午在故宫内的咖啡厅或附近餐厅用餐</div>
+      <div class="route-step">下午参观东路的乾清宫、交泰殿、御花园等</div>
+      <div class="route-step">参观完故宫后可以登上景山公园，俯瞰紫禁城全景</div>
+      <div class="route-step">晚上可以前往王府井或前门大街，品尝北京特色小吃，体验老北京风情</div>
+    </div>
+    
+    <div id="day2" class="tabcontent">
+      <h2 class="day-title">第二天：长城和鸟巢</h2>
+      <div class="poi-card">
+        <div class="poi-name">B. 八达岭长城</div>
+        <div class="poi-info">
+          <p><strong>地址:</strong> 北京市延庆区G6京藏高速58号出口</p>
+          <p><strong>电话:</strong> 010-69121383</p>
+          <p><strong>评分:</strong> 4.6</p>
+          <p><strong>推荐游览时间:</strong> 3-4小时</p>
+          <p><strong>交通:</strong> 乘坐S2线火车或长城专线巴士</p>
+          <p><strong>门票:</strong> 淡季（11月1日-次年3月31日）35元/人，旺季（4月1日-10月31日）40元/人</p>
+          <p><strong>推荐理由:</strong> 明长城中保存最好的一段，也是最早对外开放的长城景区</p>
+        </div>
+      </div>
+      
+      <div class="poi-card">
+        <div class="poi-name">E. 鸟巢（国家体育场）</div>
+        <div class="poi-info">
+          <p><strong>地址:</strong> 北京市朝阳区国家体育场南路1号</p>
+          <p><strong>电话:</strong> 010-84373008</p>
+          <p><strong>评分:</strong> 4.5</p>
+          <p><strong>推荐游览时间:</strong> 1-2小时</p>
+          <p><strong>交通:</strong> 地铁8号线奥林匹克公园站下车</p>
+          <p><strong>门票:</strong> 50元/人</p>
+          <p><strong>推荐理由:</strong> 2008年北京奥运会主会场，独特的建筑风格使其成为北京的新地标</p>
+        </div>
+      </div>
+      
+      <h3>游览建议</h3>
+      <div class="route-step">早上7:00出发前往八达岭长城，避开高峰期</div>
+      <div class="route-step">建议从北八楼方向攀登，人相对较少，风景也更好</div>
+      <div class="route-step">午餐可以在长城附近的餐厅用餐</div>
+      <div class="route-step">下午返回市区，前往奥林匹克公园参观鸟巢和水立方</div>
+      <div class="route-step">晚上可以在奥林匹克公园周边用餐，欣赏鸟巢和水立方的夜景</div>
+    </div>
+    
+    <div id="day3" class="tabcontent">
+      <h2 class="day-title">第三天：颐和园和天坛</h2>
+      <div class="poi-card">
+        <div class="poi-name">C. 颐和园</div>
+        <div class="poi-info">
+          <p><strong>地址:</strong> 北京市海淀区新建宫门路19号</p>
+          <p><strong>电话:</strong> 010-62881144</p>
+          <p><strong>评分:</strong> 4.7</p>
+          <p><strong>推荐游览时间:</strong> 3-4小时</p>
+          <p><strong>交通:</strong> 地铁4号线北宫门站或西苑站下车</p>
+          <p><strong>门票:</strong> 淡季（11月1日-次年3月31日）20元/人，旺季（4月1日-10月31日）30元/人</p>
+          <p><strong>推荐理由:</strong> 中国现存规模最大、保存最完整的皇家园林，世界文化遗产</p>
+        </div>
+      </div>
+      
+      <div class="poi-card">
+        <div class="poi-name">D. 天坛公园</div>
+        <div class="poi-info">
+          <p><strong>地址:</strong> 北京市东城区天坛东路1号</p>
+          <p><strong>电话:</strong> 010-67028866</p>
+          <p><strong>评分:</strong> 4.6</p>
+          <p><strong>推荐游览时间:</strong> 2-3小时</p>
+          <p><strong>交通:</strong> 地铁5号线天坛东门站下车</p>
+          <p><strong>门票:</strong> 淡季（11月1日-次年3月31日）10元/人，旺季（4月1日-10月31日）15元/人</p>
+          <p><strong>推荐理由:</strong> 世界上规模最大、环境最美的古代祭天建筑群，世界文化遗产</p>
+        </div>
+      </div>
+      
+      <h3>游览建议</h3>
+      <div class="route-step">早上8:00前往颐和园，从东宫门进入，游览长廊、佛香阁、昆明湖等主要景点</div>
+      <div class="route-step">中午可以在颐和园附近用餐</div>
+      <div class="route-step">下午前往天坛公园，参观祈年殿、回音壁、三音石等著名景点</div>
+      <div class="route-step">晚上可以前往什刹海或南锣鼓巷，体验老北京胡同文化</div>
+      <div class="route-step">如有时间，可以欣赏一场京剧或杂技表演，作为北京之行的完美收官</div>
+    </div>
+    
+    <h2>旅行小贴士</h2>
+    <div class="poi-card">
+      <div class="poi-info">
+        <p><strong>最佳旅游季节：</strong> 北京的春季（4-5月）和秋季（9-10月）气候宜人，是旅游的最佳时节。</p>
+        <p><strong>交通卡：</strong> 建议购买北京交通一卡通，可用于地铁、公交等公共交通。</p>
+        <p><strong>景点门票：</strong> 热门景点建议提前在网上预订门票，特别是故宫需要提前预约。</p>
+        <p><strong>当地美食：</strong> 不要错过北京烤鸭、炸酱面、涮羊肉、豆汁、艾窝窝等北京特色美食。</p>
+        <p><strong>购物：</strong> 王府井、秀水街、潘家园是著名的购物区，可以购买丝绸、景泰蓝、剪纸等纪念品。</p>
+        <p><strong>紧急电话：</strong> 报警：110，救护：120，旅游投诉：12301。</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function openDay(evt, dayName) {
+      var i, tabcontent, tablinks;
+      
+      tabcontent = document.getElementsByClassName("tabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].className = tabcontent[i].className.replace(" visible", "");
+      }
+      
+      tablinks = document.getElementsByClassName("tablinks");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+      
+      document.getElementById(dayName).className += " visible";
+      evt.currentTarget.className += " active";
+    }
+    
+    function openRouteDay(evt, dayName) {
+      var i, tabcontent, tablinks;
+      
+      tabcontent = document.getElementsByClassName("tabcontent-route");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].className = tabcontent[i].className.replace(" visible", "");
+      }
+      
+      tablinks = document.getElementsByClassName("tablinks-route");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+      
+      document.getElementById(dayName).className += " visible";
+      evt.currentTarget.className += " active";
+    }
+  </script>
+</body>
+</html>
