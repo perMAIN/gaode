@@ -1,0 +1,28 @@
+{
+  "name": "gaode",
+  "version": "1.0.0",
+  "description": "高德地图MCP服务，提供地点搜索、路线规划、地理编码等功能",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "mcp",
+    "gaode",
+    "maps",
+    "amap",
+    "claude",
+    "model-context-protocol"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.7.0",
+    "axios": "^1.8.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.2",
+    "zod": "^3.24.2"
+  }
+}
